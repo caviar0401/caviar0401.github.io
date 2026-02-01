@@ -163,7 +163,8 @@ body{
 .chip{
   height:86px;
   border-radius:14px;
-  border:1px solid rgba(255,255,255,.14);
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
   background: rgba(255,255,255,.06);
   color: var(--muted);
   display:flex;
@@ -176,6 +177,11 @@ body{
 .chip:active{ transform: scale(.99); }
 .chipIcon{ font-size:20px; opacity:.9; }
 .chipText{ font-size:18px; font-weight:900; letter-spacing:1px; }
+
+.chip.selected {
+  border-color: #d4af37;
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.6);
+}
 
 /* Draw area */
 .drawWrap{ margin-top: 18px; display:flex; flex-direction:column; gap:14px; align-items:center; }

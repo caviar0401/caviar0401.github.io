@@ -33,7 +33,7 @@
           <input class="input" id="nameInput" placeholder="請輸入您的姓名" />
 
           <label class="fieldLabel">生辰 (年/月/日 時:分)</label>
-          <input class="input" id="birthInput" placeholder="年/月/日 ----:--" />
+        <input class="input" type="datetime-local" id="birthInput" style="color-scheme: dark;" />
 
           <div class="hintCenter">--- 請選擇問事方向 ---</div>
 
@@ -63,7 +63,7 @@
                 <span></span><span></span><span></span><span></span><span></span>
               </div>
               <div class="jar">
-                <button id="drawBtn" class="sealBtn" type="button">開始<br/>抽籤</button>
+                <button id="drawBtn" class="sealBtn" type="button" onclick="validateAndDraw()">開始<br/>抽籤</button>
               </div>
             </div>
 
@@ -126,6 +126,15 @@
           <div class="teamDesc">
             致力於將前沿科技與生活場景結合。我們相信技術不只是冰冷的代碼，
             更是傳遞文化與溫度的載體。
+          </div>
+        </div>
+
+        <div class="teamCard">
+          <div class="avatar">💻</div>
+          <div class="teamTitle">算命工程師</div>
+          <div class="teamSub">用代碼解讀命運，用邏輯推演人生</div>
+          <div class="teamDesc">
+            白天寫 Code，晚上解盤。擅長結合邏輯思維與傳統命理，為迷惘的人提供八字流年分析與決策建議。不談怪力亂神，只講人生趨勢。
           </div>
         </div>
 

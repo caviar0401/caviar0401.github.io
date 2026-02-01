@@ -85,6 +85,21 @@ function clearResult(){
 let isDrawing = false;
 
 drawBtn.addEventListener("click", () => {
+
+  if (!nameInput.value.trim()) {
+    return;
+  }
+  
+  // 驗證生辰
+  if (!birthInput.value) {
+    return;
+  }
+  
+  // 驗證問事方向
+  if (!selectedTopic) {
+    return;
+  }  
+  
   if (isDrawing) return;
   isDrawing = true;
 
@@ -164,3 +179,61 @@ partnerBtn?.addEventListener("click", () => {
     }
   }
 })();
+
+// 全局變數存儲選中的問事方向
+let selectedTopic = null;
+
+// 問事方向選擇
+const topicBtns = document.querySelectorAll('.chip[data-topic]');
+topicBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    topicBtns.forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedTopic = btn.dataset.topic;
+  });
+});
+
+// 驗證並抽籤 (必須是全局函數)
+window.validateAndDraw = function() {
+  const nameInput = document.getElementById('nameInput');
+  const birthInput = document.getElementById('birthInput');
+  
+  // 驗證姓名
+  if (!nameInput.value.trim()) {
+    alert('請輸入您的姓名');
+    nameInput.focus();
+    return;
+  }
+  
+  // 驗證生辰
+  if (!birthInput.value) {
+    alert('請選擇您的生辰');
+    birthInput.focus();
+    return;
+  }
+  
+  // 驗證問事方向
+  if (!selectedTopic) {
+    alert('請選擇問事方向');
+    return;
+  }
+  
+  // 驗證通過,執行抽籤
+  drawLottery();
+}
+
+// 抽籤邏輯
+function drawLottery() {
+  console.log('開始抽籤...', {
+    name: document.getElementById('nameInput').value,
+    birth: document.getElementById('birthInput').value,
+    topic: selectedTopic
+  });
+  
+  // 顯示結果卡片
+  const resultCard = document.getElementById('resultCard');
+  resultCard.classList.remove('hidden');
+  
+  // 滾動到結果
+  resultCard.scrollIntoView({ behavior: 'smooth' });
+}
