@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>雷課好運籤</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <main class="page">
+    <header class="header">
+      <div class="titleBox">雷課好運籤</div>
+    </header>
+
+    <!-- 抽籤區 -->
+    <section id="home" class="home">
+      <div class="jarWrap" aria-label="抽籤筒">
+        <div class="sticks" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div class="jar">
+          <button id="drawBtn" class="sealBtn" type="button">開始<br/>抽籤</button>
+        </div>
+      </div>
+
+      <button id="shareBtn" class="shareBtn" type="button">
+        ↗ 分享給好友
+      </button>
+
+      <p class="footerNote">（純前端示範版，可部署成靜態網站）</p>
+    </section>
+
+    <!-- 結果區 -->
+    <section id="result" class="result hidden">
+      <div class="card">
+        <div class="cardTitle" id="rTitle">—</div>
+        <div class="poem" id="rPoem">—</div>
+        <div class="explain" id="rExplain">—</div>
+
+        <div class="actions">
+          <button id="againBtn" class="primary" type="button">再抽一次</button>
+          <button id="copyLinkBtn" class="ghost" type="button">複製結果連結</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
