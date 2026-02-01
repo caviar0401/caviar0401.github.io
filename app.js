@@ -14,6 +14,9 @@ const shareBtn = $("#shareBtn");
 const againBtn = $("#againBtn");
 const copyLinkBtn = $("#copyLinkBtn");
 
+const rPersonality = $("#rPersonality");
+const rYearFortune = $("#rYearFortune");
+
 const resultCard = $("#resultCard");
 const rTitle = $("#rTitle");
 const rPoem = $("#rPoem");
@@ -67,7 +70,20 @@ function getLotById(id){
 function showResult(lot){
   rTitle.textContent = lot.title ?? `第 ${lot.id} 籤`;
   rPoem.textContent = lot.poem ?? "";
-  rExplain.textContent = lot.explain ?? "";
+  if(selectedTopic === null){
+    rExplain.textContent = lot.explain ?? "";
+  }else if(selectedTopic === "love"){
+    rExplain.textContent = "良緣感情："+ (lot.love ?? "");
+  }else if(selectedTopic === "career"){
+    rExplain.textContent =  "事業前程："+ (lot.career ?? "");
+  }else if(selectedTopic === "money"){
+    rExplain.textContent = "財運投資："+ (lot.money ?? "");
+  }else if(selectedTopic === "health"){
+    rExplain.textContent = "健康平安："+ (lot.health ?? "");
+  }else{
+    rExplain.textContent = lot.explain ?? "";
+  }
+  
   resultCard.classList.remove("hidden");
 
   const url = new URL(window.location.href);
@@ -99,7 +115,7 @@ drawBtn.addEventListener("click", () => {
   if (!selectedTopic) {
     return;
   }  
-  
+
   if (isDrawing) return;
   isDrawing = true;
 
@@ -164,6 +180,9 @@ partnerBtn?.addEventListener("click", () => {
   window.open("https://example.com", "_blank");
 });
 
+// 全局變數存儲選中的問事方向
+let selectedTopic = null;
+
 // ---- Init ----
 (function init(){
   initTabFromUrl();
@@ -175,13 +194,12 @@ partnerBtn?.addEventListener("click", () => {
     const lot = getLotById(id);
     if (lot) {
       setTab("home");
+      selectedTopic = null; // 預設顯示 explain
       showResult(lot);
     }
   }
 })();
 
-// 全局變數存儲選中的問事方向
-let selectedTopic = null;
 
 // 問事方向選擇
 const topicBtns = document.querySelectorAll('.chip[data-topic]');
@@ -194,9 +212,10 @@ topicBtns.forEach(btn => {
 });
 
 // 驗證並抽籤 (必須是全局函數)
-window.validateAndDraw = function() {
+window.validateAndDraw = async function() {
   const nameInput = document.getElementById('nameInput');
   const birthInput = document.getElementById('birthInput');
+  const genderInputs = document.getElementsByName('gender');
   
   // 驗證姓名
   if (!nameInput.value.trim()) {
@@ -218,16 +237,57 @@ window.validateAndDraw = function() {
     return;
   }
   
+  
+// 呼叫 API 取得籤詩結果
+    try {
+        const nameInput = document.getElementById('nameInput');
+        const birthInput = document.getElementById('birthInput');
+        
+        // 解析生辰日期和時間
+        const birthDateTime = birthInput.value; // "1975-09-24T08:00"
+        const birthDate = birthDateTime.split('T')[0]; // "1975-09-24"
+        const birthTime = birthDateTime.split('T')[1]?.split(':')[0] || '8'; // "08"
+        // 構建 API URL (這裡需要補充 time 和 gender 參數)
+        const apiUrl = `https://api.allcares.app/zwds?name=${encodeURIComponent(nameInput.value)}&bir=${birthDate}&time=${birthTime}&gender=${genderInputs[0].checked ? '1' : '0'}&topic=${encodeURIComponent(selectedTopic)}`;
+        
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error('API 請求失敗');
+        }
+        
+        const apiResult = await response.json();
+        console.log('API 返回結果:', apiResult);
+        
+        rPersonality.textContent = apiResult["data"].split("|")[0];
+
+        rYearFortune.textContent = apiResult["data"].split("|")[1];
+       
+
+        // 將 API 結果傳遞給抽籤函數
+        drawLottery(apiResult);
+    } catch (error) {
+        console.error('API 請求錯誤:', error);
+        alert('抽籤服務暫時無法使用，請稍後再試');
+        return;
+    }
+
   // 驗證通過,執行抽籤
-  drawLottery();
+  //drawLottery();
 }
 
 // 抽籤邏輯
-function drawLottery() {
+function drawLottery(apiResult) {
   console.log('開始抽籤...', {
     name: document.getElementById('nameInput').value,
     birth: document.getElementById('birthInput').value,
-    topic: selectedTopic
+    topic: selectedTopic,
+    apiResult: apiResult
   });
   
   // 顯示結果卡片

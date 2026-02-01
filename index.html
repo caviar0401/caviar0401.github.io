@@ -29,7 +29,18 @@
             <div class="panelDivider"></div>
           </div>
 
-          <label class="fieldLabel">信男/信女 姓名 <span class="req">*</span></label>
+        <div class="fieldLabel" style="display: flex; gap: 1rem; align-items: center;">
+            <label style="display: flex; align-items: center; gap: 0.3rem; cursor: pointer;">
+                <input type="radio" name="gender" value="male" checked />
+                <span>信男</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 0.3rem; cursor: pointer;">
+                <input type="radio" name="gender" value="female" />
+                <span>信女</span>
+            </label>
+        </div>
+<label class="fieldLabel">姓名 <span class="req">*</span></label>
+        <label class="fieldLabel">
           <input class="input" id="nameInput" placeholder="請輸入您的姓名" />
 
           <label class="fieldLabel">生辰 (年/月/日 時:分)</label>
@@ -66,15 +77,24 @@
                 <button id="drawBtn" class="sealBtn" type="button" onclick="validateAndDraw()">開始<br/>抽籤</button>
               </div>
             </div>
-
-            <button id="shareBtn" class="cta" type="button">✧ AI 稟報，誠心求籤</button>
             <div class="subNote">✧ 媽祖24小時在線解惑</div>
           </div>
         </div>
 
         <!-- 結果卡（同頁顯示，不切頁，符合「求籤」流程） -->
         <div id="resultCard" class="resultCard hidden">
-          <div class="resultTitle" id="rTitle">—</div>
+        <div class="resultSection">
+            <div class="sectionTitle">個性分析</div>
+            <div class="sectionContent" id="rPersonality">—</div>
+        </div>
+        <hr/>
+        <div class="resultSection">
+            <div class="sectionTitle">流年分析</div>
+            <div class="sectionContent" id="rYearFortune">—</div>
+        </div>
+        <hr/>
+
+        <div class="resultTitle" id="rTitle">—</div>
           <div class="resultPoem" id="rPoem">—</div>
           <div class="resultExplain" id="rExplain">—</div>
 
@@ -87,7 +107,7 @@
 
       <!-- TAB 2: Prizes / 獎品介紹 -->
       <section class="page hidden" data-page="prizes">
-        <div class="pageHead">開運平安好物</div>
+        <div class="pageHead"></div>
 
         <div class="bannerCard">
           <div class="bannerTitle">媽祖賜福・平安零食</div>
@@ -117,7 +137,7 @@
 
       <!-- TAB 3: Author / 作者介紹 -->
       <section class="page hidden" data-page="author">
-        <div class="pageHead">關於開發團隊</div>
+        <div class="pageHead"></div>
 
         <div class="teamCard">
           <div class="avatar">🚀</div>
@@ -147,15 +167,16 @@
 
           <label class="fieldLabel">LINE ID</label>
           <input class="input" placeholder="請輸入 LINE ID" />
-
+          <br/><br/><br/>
           <button class="cta" type="button">✈ 送出預約資訊</button>
+          <br/><br/>
           <div class="subNote">送出後將由專人與您聯繫安排時間</div>
         </div>
       </section>
 
       <!-- TAB 4: Partner / 商家報名 -->
       <section class="page hidden" data-page="partner">
-        <div class="pageHead">商家合作報名</div>
+        <div class="pageHead"></div>
 
         <div class="teamCard">
           <div class="avatar">🏪</div>
@@ -163,7 +184,9 @@
           <div class="teamDesc">
             歡迎在地優質商家加入，共同推廣平安好物，與媽祖一同賜福。
           </div>
+          <br /><br />
           <button class="cta" id="partnerBtn" type="button">✧ 立即前往報名 →</button>
+          <br /><br />
           <div class="subNote">（將前往外部表單填寫報名資訊）</div>
         </div>
       </section>
