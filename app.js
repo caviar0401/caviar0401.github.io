@@ -24,6 +24,8 @@ const rExplain = $("#rExplain");
 
 const partnerBtn = $("#partnerBtn");
 
+const btnPrerequest = $("#btnPrerequest");
+
 // ---- Tab Router ----
 const TITLES = {
   home: "線上靈籤解惑",
@@ -84,14 +86,22 @@ function showResult(lot){
     rExplain.textContent = lot.explain ?? "";
   }
   
-  resultCard.classList.remove("hidden");
+  // 使用 dialog 顯示
+  resultCard.showModal();
 
   const url = new URL(window.location.href);
   url.searchParams.set("id", String(lot.id));
   history.replaceState({}, "", url.toString());
 }
 function clearResult(){
-  resultCard.classList.add("hidden");
+  rExplain.textContent = "";
+  rTitle.textContent = "";
+  rPoem.textContent = "";
+  rPersonality.textContent = "—";
+  rYearFortune.textContent = "—";
+
+  // 關閉 dialog
+  resultCard.close();
   const url = new URL(window.location.href);
   url.searchParams.delete("id");
   history.replaceState({}, "", url.toString());
@@ -122,8 +132,10 @@ drawBtn.addEventListener("click", () => {
   // 抽到的籤先決定好
   const lot = drawRandomLot();
 
-  // 先把結果卡收起來（避免連抽時視覺混亂）
-  resultCard.classList.add("hidden");
+  console.log("抽到籤號：", lot.id);
+  postProducts(lot.id);
+  // 先關閉結果 dialog（避免連抽時視覺混亂）
+  resultCard.close();
 
   // 進入動畫狀態
   jarWrap.classList.add("is-animating");
@@ -174,11 +186,64 @@ shareBtn?.addEventListener("click", shareCurrent);
 copyLinkBtn?.addEventListener("click", copyLink);
 againBtn?.addEventListener("click", clearResult);
 
+btnPrerequest?.addEventListener("click", postContact);
+
+// 關閉對話框按鈕
+const closeDialogBtn = $("#closeDialogBtn");
+closeDialogBtn?.addEventListener("click", () => resultCard.close());
+
+// 點擊背景關閉對話框
+resultCard?.addEventListener("click", (e) => {
+  if (e.target === resultCard) {
+    resultCard.close();
+  }
+});
+
 // ---- Partner button (示範導向外部表單) ----
 partnerBtn?.addEventListener("click", () => {
   // TODO: 改成你的 SurveyCake / Google Form 連結
   window.open("https://example.com", "_blank");
 });
+
+// ---- Products API ----
+async function loadProducts() {
+  const container = $("#productsContainer");
+  if (!container) return;
+
+  try {
+    const response = await fetch("https://api.allcares.app/products");
+    if (!response.ok) throw new Error("Failed to fetch products");
+    
+    const products = await response.json();
+    
+    // 清空容器
+    container.innerHTML = "";
+    
+    // 確保 products 是陣列
+    const productArray = Array.isArray(products) ? products : (products.data || []);
+    
+    // 動態生成商品卡片
+    productArray.forEach(product => {
+      const card = document.createElement("div");
+      card.className = "productCard";
+      
+      card.innerHTML = `
+        <div class="productImg">${product.img || "📦"}</div>
+        <div class="productBody">
+          <div class="productTitle">${product.title || "商品名稱"}</div>
+          <div class="productDesc">${product.description || ""}</div>
+          <div class="productPrice">優惠價 NT$ ${product.price || "0"}</div>
+        </div>
+        <button class="miniBtn" type="button" onclick="${product.url ? `window.open('${product.url}', '_blank')` : 'return false;'}">查看</button>
+      `;
+      
+      container.appendChild(card);
+    });
+  } catch (error) {
+    console.error("載入商品失敗:", error);
+    container.innerHTML = '<div style="text-align: center; padding: 2rem; color: #999;">商品載入中...</div>';
+  }
+}
 
 // 全局變數存儲選中的問事方向
 let selectedTopic = null;
@@ -198,6 +263,9 @@ let selectedTopic = null;
       showResult(lot);
     }
   }
+  
+  // 載入商品數據
+  loadProducts();
 })();
 
 
@@ -290,10 +358,79 @@ function drawLottery(apiResult) {
     apiResult: apiResult
   });
   
-  // 顯示結果卡片
+  // 顯示結果對話框
   const resultCard = document.getElementById('resultCard');
-  resultCard.classList.remove('hidden');
+  resultCard.showModal();
+}
+
+async function postProducts(draw) {
+  // 發送 POST 請求到指定 API
+
+  const nameInput = document.getElementById('nameInput');
+  const birthInput = document.getElementById('birthInput');
+  const genderInputs = document.getElementsByName('gender');
+
+  const requestBody = {
+    name: nameInput.value,
+    gender: genderInputs[0].checked ? '1' : '0',
+    birth: birthInput.value,
+    cata: selectedTopic,
+    draw: draw+""
+  };
   
-  // 滾動到結果
-  resultCard.scrollIntoView({ behavior: 'smooth' });
+  const response = await fetch("https://api.allcares.app/products", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+        
+        
+       const data = await response.json();
+       console.log('抽籤商品結果:', data);
+      if(data["data"] == '銘謝惠顧'){
+        rGift.textContent = "很遺憾，這次沒有抽中開運好物，請再接再厲！";
+        
+      }else{
+        rGift.textContent = '恭喜您獲得開運好物：' + data["data"]["title"] + '，價值：'+ data["data"]["price"]+'，請至「開運平安好物」頁面查看詳情！';
+        
+      }
+}
+
+async function postContact() {
+  // 發送 POST 請求到指定 API
+
+  const emailInput = document.getElementById('emailInput');
+  const lineInput = document.getElementById('lineInput');
+
+  if (!emailInput.value.trim() && !lineInput.value.trim()) {
+    alert('請輸入您的電子信箱或 LINE ID');
+    if (!emailInput.value.trim()){
+    emailInput.focus();
+    }else{
+    lineInput.focus();
+    }
+    return;
+  }
+
+  const requestBody = {
+    email: emailInput.value,
+    line: lineInput.value,
+  };
+  
+  const response = await fetch("https://api.allcares.app/zwdsContact", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+        
+        
+       const data = await response.json();
+
+       console.log('聯絡資訊回應結果:', data);
+
+       alert('您的預約資訊已送出，我們會盡快與您聯絡，謝謝！');
 }

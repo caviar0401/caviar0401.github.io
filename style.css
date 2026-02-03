@@ -546,3 +546,173 @@ body{
   from { opacity:0; transform: translateY(8px); }
   to   { opacity:1; transform: translateY(0); }
 }
+
+/* Dialog Modal Styles */
+.resultCard {
+  border: none;
+  border-radius: 16px;
+  background: var(--card);
+  padding: 32px 24px 24px;
+  max-width: 90vw;
+  width: 500px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow);
+  position: relative;
+}
+
+.resultCard::backdrop {
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+}
+
+.resultCard[open] {
+  animation: dialogFadeIn 0.3s ease-out;
+}
+
+@keyframes dialogFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.closeBtn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--stroke);
+  background: var(--card2);
+  color: var(--muted);
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+.closeBtn:hover {
+  background: var(--gold);
+  color: var(--bg0);
+  border-color: var(--gold);
+  transform: rotate(90deg);
+}
+
+.resultCard .resultSection {
+  margin-bottom: 1.2rem;
+}
+
+.resultCard .sectionTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.resultCard .sectionContent {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text);
+}
+
+.resultCard hr {
+  border: none;
+  border-top: 1px solid var(--stroke);
+  margin: 1.5rem 0;
+}
+
+.resultCard .resultTitle {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--gold);
+  text-align: center;
+  margin-bottom: 1rem;
+  letter-spacing: 1px;
+}
+
+.resultCard .resultPoem {
+  font-size: 15px;
+  line-height: 1.9;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: var(--card2);
+  border-radius: 8px;
+  border-left: 3px solid var(--gold);
+}
+
+.resultCard .resultExplain {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--muted);
+  margin-bottom: 2rem;
+}
+
+.resultCard .resultGift {
+  font-size: 20px;
+  line-height: 1.8;
+  color: var(--muted);
+  margin-bottom: 2rem;
+  color: yellow;
+}
+
+.resultCard .rowBtn {
+  display: flex;
+  gap: 12px;
+}
+
+.resultCard .btnPrimary,
+.resultCard .btnGhost {
+  flex: 1;
+  padding: 14px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.resultCard .btnPrimary {
+  background: var(--gold);
+  color: var(--bg0);
+  border: none;
+}
+
+.resultCard .btnPrimary:hover {
+  background: var(--gold2);
+  transform: translateY(-2px);
+}
+
+.resultCard .btnGhost {
+  background: transparent;
+  color: var(--gold);
+  border: 1px solid var(--gold);
+}
+
+.resultCard .btnGhost:hover {
+  background: rgba(242, 183, 5, 0.1);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 600px) {
+  .resultCard {
+    width: 95vw;
+    max-height: 90vh;
+    padding: 28px 20px 20px;
+  }
+  
+  .resultCard .rowBtn {
+    flex-direction: column;
+  }
+}
+

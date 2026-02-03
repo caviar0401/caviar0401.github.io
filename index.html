@@ -81,28 +81,33 @@
           </div>
         </div>
 
-        <!-- 結果卡（同頁顯示，不切頁，符合「求籤」流程） -->
-        <div id="resultCard" class="resultCard hidden">
-        <div class="resultSection">
+        <!-- 結果卡（使用 dialog 彈窗） -->
+        <dialog id="resultCard" class="resultCard">
+          <button id="closeDialogBtn" class="closeBtn" type="button">✕</button>
+          
+          <div class="resultSection">
             <div class="sectionTitle">個性分析</div>
             <div class="sectionContent" id="rPersonality">—</div>
-        </div>
-        <hr/>
-        <div class="resultSection">
+          </div>
+          <hr/>
+          <div class="resultSection">
             <div class="sectionTitle">流年分析</div>
             <div class="sectionContent" id="rYearFortune">—</div>
-        </div>
-        <hr/>
+          </div>
+          <hr/>
 
-        <div class="resultTitle" id="rTitle">—</div>
+          <div class="resultTitle" id="rTitle">—</div>
           <div class="resultPoem" id="rPoem">—</div>
           <div class="resultExplain" id="rExplain">—</div>
+          
+          <br/><br/>
+          <div class="resultGift" id="rGift">—</div>
 
           <div class="rowBtn">
             <button id="againBtn" class="btnPrimary" type="button">再抽一次</button>
             <button id="copyLinkBtn" class="btnGhost" type="button">複製結果連結</button>
           </div>
-        </div>
+        </dialog>
       </section>
 
       <!-- TAB 2: Prizes / 獎品介紹 -->
@@ -114,25 +119,8 @@
           <div class="bannerDesc">所有商品皆過爐加持，食用可保平安順遂</div>
         </div>
 
-        <div class="productCard">
-          <div class="productImg">🍪</div>
-          <div class="productBody">
-            <div class="productTitle">甜蜜結緣・草莓米餅</div>
-            <div class="productDesc">象徵戀愛好感情，吃了這包，桃花朵朵開。</div>
-            <div class="productPrice">優惠價 NT$ 88</div>
-          </div>
-          <button class="miniBtn" type="button">查看</button>
-        </div>
-
-        <div class="productCard">
-          <div class="productImg">🥮</div>
-          <div class="productBody">
-            <div class="productTitle">步步高升・黑糖沙其馬</div>
-            <div class="productDesc">濃郁黑糖香氣，象徵事業步步高升。</div>
-            <div class="productPrice">優惠價 NT$ 99</div>
-          </div>
-          <button class="miniBtn" type="button">查看</button>
-        </div>
+        <!-- 商品列表容器（從 API 動態載入） -->
+        <div id="productsContainer"></div>
       </section>
 
       <!-- TAB 3: Author / 作者介紹 -->
@@ -163,12 +151,12 @@
           <div class="teamSub">八字排盤・流年運勢・職涯諮詢</div>
 
           <label class="fieldLabel">電子信箱 (Email)</label>
-          <input class="input" placeholder="example@mail.com" />
+          <input class="input" id="emailInput" placeholder="example@mail.com" />
 
           <label class="fieldLabel">LINE ID</label>
-          <input class="input" placeholder="請輸入 LINE ID" />
+          <input class="input" id="lineInput" placeholder="請輸入 LINE ID" />
           <br/><br/><br/>
-          <button class="cta" type="button">✈ 送出預約資訊</button>
+          <button class="cta" type="button" id="btnPrerequest">✈ 送出預約資訊</button>
           <br/><br/>
           <div class="subNote">送出後將由專人與您聯繫安排時間</div>
         </div>
