@@ -284,40 +284,104 @@ body{
 
 /* Result card */
 .resultCard{
-  margin-top:16px;
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.12);
-  border-radius: 16px;
-  padding: 16px;
-  box-shadow: 0 18px 40px rgba(0,0,0,.35);
-  animation: fadeInUp .22s ease-out;
+  margin-top: 24px;
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, rgba(242,183,5,.08), rgba(242,183,5,.03));
+  border: 2px solid var(--gold);
+  border-radius: 20px;
+  padding: 28px 24px;
+  box-shadow: 
+    0 8px 32px rgba(0,0,0,.4),
+    0 0 60px rgba(242,183,5,.15),
+    inset 0 1px 0 rgba(255,255,255,.1);
+  position: relative;
+  animation: fadeInUp .4s ease-out;
+  overflow: hidden;
 }
-.resultTitle{
-  font-size:22px;
-  font-weight:900;
+
+.resultCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, 
+    transparent,
+    var(--gold) 20%,
+    var(--gold) 80%,
+    transparent
+  );
+}
+
+.resultCard::after {
+  content: '✧';
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  font-size: 24px;
   color: var(--gold);
-  letter-spacing:1px;
-  margin-bottom:10px;
+  opacity: 0.3;
+  animation: glowPulse 2s infinite ease-in-out;
 }
+
+.resultTitle{
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--gold);
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+  text-align: center;
+  text-shadow: 0 2px 8px rgba(242,183,5,.3);
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(242,183,5,.3);
+}
+
 .resultPoem{
-  background: rgba(0,0,0,.25);
-  border: 1px solid rgba(255,255,255,.12);
-  border-radius: 14px;
-  padding: 12px;
-  line-height:1.7;
-  margin-bottom:10px;
-  font-weight: bold;
-  font-size: 26px;
+  background: linear-gradient(135deg, rgba(0,0,0,.4), rgba(0,0,0,.25));
+  border: 1px solid rgba(242,183,5,.3);
+  border-left: 4px solid var(--gold);
+  border-radius: 12px;
+  padding: 20px 18px;
+  line-height: 2;
+  margin-bottom: 16px;
+  font-weight: 600;
+  font-size: 24px;
+  color: var(--text);
+  letter-spacing: 1px;
+  box-shadow: inset 0 2px 10px rgba(0,0,0,.2);
+  white-space: pre-line;
 }
+
 .resultExplain{
-  line-height:1.8;
-  color: rgba(255,255,255,.82);
+  line-height: 1.9;
+  color: rgba(255,255,255,.85);
+  font-size: 15px;
+  padding: 16px 0;
+  border-top: 1px dashed rgba(255,255,255,.15);
+  margin-top: 8px;
 }
+
+.resultGift{
+  background: linear-gradient(135deg, rgba(242,183,5,.15), rgba(242,183,5,.05));
+  border: 1px solid var(--gold);
+  border-radius: 12px;
+  padding: 16px;
+  margin: 16px 0;
+  color: var(--gold);
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.7;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(242,183,5,.2);
+}
+
 .rowBtn{
-  display:flex;
-  gap:10px;
-  margin-top:14px;
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
 }
+
 .btnPrimary,.btnGhost{
   flex:1;
   height:48px;
@@ -358,6 +422,7 @@ body{
 }
 
 .productCard{
+  position: relative;
   display:flex;
   gap:14px;
   align-items:center;
@@ -367,6 +432,20 @@ body{
   border: 1px solid rgba(255,255,255,.12);
   box-shadow: var(--shadow);
   margin-bottom:14px;
+}
+.prizeBadge {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  color: var(--bg0);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(242, 183, 5, 0.3);
+  letter-spacing: 0.5px;
+  z-index: 1;
 }
 .productImg{
   width:86px;
@@ -382,9 +461,12 @@ body{
 .productTitle{ font-size:22px; font-weight:900; }
 .productDesc{ margin-top:6px; color: rgba(255,255,255,.65); line-height:1.6; }
 .productPrice{ margin-top:10px; color: var(--gold); font-weight:900; font-size:22px; }
-.miniBtn{
+.productQuantity{
+  position: absolute;
+  bottom: 10px;
+  right: 12px;
   height:44px;
-  padding: 0 14px;
+  padding: 10px 14px;
   border-radius: 10px;
   border: 1px solid rgba(255,255,255,.14);
   background: rgba(255,255,255,.06);
@@ -441,7 +523,7 @@ body{
   backdrop-filter: blur(10px);
   border-top: 1px solid rgba(255,255,255,.08);
   display:grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
 }
 
 .tab{
@@ -463,8 +545,9 @@ body{
 .tab.active::before{
   content:"";
   position:absolute;
+  top: 10px;
   width: 86px;
-  height: 64px;
+  height: 80px;
   border-radius: 12px;
   border: 2px solid rgba(0,140,255,.8);
   box-shadow: 0 0 0 2px rgba(0,0,0,.65);
@@ -554,7 +637,6 @@ body{
   background: var(--card);
   padding: 32px 24px 24px;
   max-width: 90vw;
-  width: 500px;
   max-height: 85vh;
   overflow-y: auto;
   box-shadow: var(--shadow);
@@ -641,7 +723,7 @@ body{
 }
 
 .resultCard .resultPoem {
-  font-size: 15px;
+  font-size: 24px;
   line-height: 1.9;
   color: var(--text);
   margin-bottom: 1.5rem;
@@ -713,6 +795,40 @@ body{
   
   .resultCard .rowBtn {
     flex-direction: column;
+  }
+}
+
+/* Snackbar Notification */
+.snackbar {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100px);
+  background: var(--card);
+  color: var(--text);
+  padding: 16px 24px;
+  border-radius: 12px;
+  border: 1px solid var(--gold);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 20px rgba(242, 183, 5, 0.2);
+  font-size: 15px;
+  font-weight: 500;
+  z-index: 10000;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  max-width: 90vw;
+  text-align: center;
+}
+
+.snackbar.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+@media (max-width: 600px) {
+  .snackbar {
+    top: 10px;
+    padding: 14px 20px;
+    font-size: 14px;
   }
 }
 

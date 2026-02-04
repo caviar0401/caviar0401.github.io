@@ -2,7 +2,22 @@ import { LOTS } from "./lots.js";
 
 const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
 const $ = (sel, root=document) => root.querySelector(sel);
-
+// ---- Snackbar ----
+function showSnackbar(message, duration = 3000) {
+  const snackbar = document.createElement('div');
+  snackbar.className = 'snackbar';
+  snackbar.textContent = message;
+  document.body.appendChild(snackbar);
+  
+  // 觸發動畫
+  setTimeout(() => snackbar.classList.add('show'), 10);
+  
+  // 自動消失
+  setTimeout(() => {
+    snackbar.classList.remove('show');
+    setTimeout(() => snackbar.remove(), 300);
+  }, duration);
+}
 const tabs = $$(".tab");
 const pages = $$(".page");
 const pageTitle = $("#pageTitle");
@@ -12,16 +27,17 @@ const jarWrap = $(".jarWrap");
 const drawBtn = $("#drawBtn");
 const shareBtn = $("#shareBtn");
 const againBtn = $("#againBtn");
-const copyLinkBtn = $("#copyLinkBtn");
+const appointBtn = $("#appointBtn");
 
 const rPersonality = $("#rPersonality");
 const rYearFortune = $("#rYearFortune");
 
 const resultCard = $("#resultCard");
+const resultCard2 = $("#resultCard2");
 const rTitle = $("#rTitle");
 const rPoem = $("#rPoem");
 const rExplain = $("#rExplain");
-
+const rTitle2 = $("#rTitle2");
 const partnerBtn = $("#partnerBtn");
 
 const btnPrerequest = $("#btnPrerequest");
@@ -30,7 +46,8 @@ const btnPrerequest = $("#btnPrerequest");
 const TITLES = {
   home: "線上靈籤解惑",
   prizes: "開運平安好物",
-  author: "關於開發團隊",
+  activity: "媽祖賜福活動",
+  author: "預約專屬解籤",
   partner: "商家合作報名",
 };
 
@@ -52,7 +69,7 @@ function setTab(tabName){
 
 function initTabFromUrl(){
   const hash = (window.location.hash || "#home").replace("#", "");
-  const valid = ["home","prizes","author","partner"];
+  const valid = ["home","prizes","activity","author","partner"];
   setTab(valid.includes(hash) ? hash : "home");
 }
 
@@ -70,8 +87,31 @@ function getLotById(id){
   return LOTS.find(x => x.id === num) ?? null;
 }
 function showResult(lot){
+  // 只在有實際內容時才顯示
+  if (!lot || !lot.poem) {
+    return;
+  }
+  
   rTitle.textContent = lot.title ?? `第 ${lot.id} 籤`;
-  rPoem.textContent = lot.poem ?? "";
+  rTitle2.textContent = lot.title ?? `第 ${lot.id} 籤`;
+  
+  // 將籤詩分成兩行顯示
+  const poem = lot.poem ?? "";
+  const poemLength = poem.length;
+  const midPoint = Math.ceil(poemLength / 2);
+  // 尋找中間點附近的標點符號
+  let splitIndex = midPoint;
+  const punctuation = ['，', '。', '；', '、', '！', '？', ' '];
+  for (let i = midPoint - 3; i < midPoint + 4 && i < poemLength; i++) {
+    if (i > 0 && punctuation.includes(poem[i])) {
+      splitIndex = i + 1;
+      break;
+    }
+  }
+  const line1 = poem.substring(0, splitIndex).trim();
+  const line2 = poem.substring(splitIndex).trim();
+  rPoem.textContent = line1 + '\n' + line2;
+  
   if(selectedTopic === null){
     rExplain.textContent = lot.explain ?? "";
   }else if(selectedTopic === "love"){
@@ -86,25 +126,26 @@ function showResult(lot){
     rExplain.textContent = lot.explain ?? "";
   }
   
-  // 使用 dialog 顯示
-  resultCard.showModal();
-
-  const url = new URL(window.location.href);
-  url.searchParams.set("id", String(lot.id));
-  history.replaceState({}, "", url.toString());
+  // 顯示結果卡
+  resultCard.classList.remove("hidden");
+  resultCard2.classList.remove("hidden");
+  
+  // 滾動到結果
+  setTimeout(() => {
+    resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 100);
 }
 function clearResult(){
   rExplain.textContent = "";
   rTitle.textContent = "";
+  rTitle2.textContent = "";
   rPoem.textContent = "";
   rPersonality.textContent = "—";
   rYearFortune.textContent = "—";
 
-  // 關閉 dialog
-  resultCard.close();
-  const url = new URL(window.location.href);
-  url.searchParams.delete("id");
-  history.replaceState({}, "", url.toString());
+  // 隱藏結果卡
+  resultCard.classList.add("hidden");
+  resultCard2.classList.add("hidden");
 }
 
 // ---- Draw animation (3s with settle) ----
@@ -134,8 +175,9 @@ drawBtn.addEventListener("click", () => {
 
   console.log("抽到籤號：", lot.id);
   postProducts(lot.id);
-  // 先關閉結果 dialog（避免連抽時視覺混亂）
-  resultCard.close();
+  // 先隱藏結果卡（避免連抽時視覺混亂）
+  resultCard.classList.add("hidden");
+  resultCard2.classList.add("hidden");
 
   // 進入動畫狀態
   jarWrap.classList.add("is-animating");
@@ -175,34 +217,27 @@ async function shareCurrent(){
     } catch (_) {}
   }
   await navigator.clipboard.writeText(url);
-  alert("已複製分享連結！");
+  showSnackbar("已複製分享連結！");
 }
 async function copyLink(){
   await navigator.clipboard.writeText(window.location.href);
-  alert("已複製結果連結！");
+  showSnackbar("已複製結果連結！");
+}
+
+async function appoint() {
+  setTab("author");
 }
 
 shareBtn?.addEventListener("click", shareCurrent);
-copyLinkBtn?.addEventListener("click", copyLink);
+appointBtn?.addEventListener("click", appoint);
 againBtn?.addEventListener("click", clearResult);
 
 btnPrerequest?.addEventListener("click", postContact);
 
-// 關閉對話框按鈕
-const closeDialogBtn = $("#closeDialogBtn");
-closeDialogBtn?.addEventListener("click", () => resultCard.close());
-
-// 點擊背景關閉對話框
-resultCard?.addEventListener("click", (e) => {
-  if (e.target === resultCard) {
-    resultCard.close();
-  }
-});
-
 // ---- Partner button (示範導向外部表單) ----
 partnerBtn?.addEventListener("click", () => {
   // TODO: 改成你的 SurveyCake / Google Form 連結
-  window.open("https://example.com", "_blank");
+  window.open("https://www.surveycake.com/s/WQ7WZ", "_blank");
 });
 
 // ---- Products API ----
@@ -222,19 +257,28 @@ async function loadProducts() {
     // 確保 products 是陣列
     const productArray = Array.isArray(products) ? products : (products.data || []);
     
+    // 獲品等級對應表
+    const prizeLabels = ["良緣感情", "事業前程", "財運投資", "健康平安", "五等獎"];
+    
     // 動態生成商品卡片
-    productArray.forEach(product => {
+    productArray.forEach((product, index) => {
       const card = document.createElement("div");
       card.className = "productCard";
       
+      // 獲取獲品等級標籤（如果有 prize 屬性則使用，否則依序使用）
+      const prizeLevel = product.prize || prizeLabels[index] || "普通獎";
+
+      const productQuantity = product["quantity"] ? `限量 `+product["quantity"]+ " 組" : "不限量";
+      
       card.innerHTML = `
+        <div class="prizeBadge">${prizeLevel}</div>
         <div class="productImg">${product.img || "📦"}</div>
         <div class="productBody">
           <div class="productTitle">${product.title || "商品名稱"}</div>
           <div class="productDesc">${product.description || ""}</div>
           <div class="productPrice">優惠價 NT$ ${product.price || "0"}</div>
         </div>
-        <button class="miniBtn" type="button" onclick="${product.url ? `window.open('${product.url}', '_blank')` : 'return false;'}">查看</button>
+        <div class="productQuantity">${productQuantity}</div>
       `;
       
       container.appendChild(card);
@@ -251,18 +295,6 @@ let selectedTopic = null;
 // ---- Init ----
 (function init(){
   initTabFromUrl();
-
-  // 若網址帶 ?id=xx，直接顯示那支籤（留在首頁求籤）
-  const url = new URL(window.location.href);
-  const id = url.searchParams.get("id");
-  if (id) {
-    const lot = getLotById(id);
-    if (lot) {
-      setTab("home");
-      selectedTopic = null; // 預設顯示 explain
-      showResult(lot);
-    }
-  }
   
   // 載入商品數據
   loadProducts();
@@ -287,21 +319,21 @@ window.validateAndDraw = async function() {
   
   // 驗證姓名
   if (!nameInput.value.trim()) {
-    alert('請輸入您的姓名');
+    showSnackbar('請輸入您的姓名');
     nameInput.focus();
     return;
   }
   
   // 驗證生辰
   if (!birthInput.value) {
-    alert('請選擇您的生辰');
+    showSnackbar('請選擇您的生辰');
     birthInput.focus();
     return;
   }
   
   // 驗證問事方向
   if (!selectedTopic) {
-    alert('請選擇問事方向');
+    showSnackbar('請選擇問事方向');
     return;
   }
   
@@ -341,7 +373,7 @@ window.validateAndDraw = async function() {
         drawLottery(apiResult);
     } catch (error) {
         console.error('API 請求錯誤:', error);
-        alert('抽籤服務暫時無法使用，請稍後再試');
+        showSnackbar('抽籤服務暫時無法使用，請稍後再試');
         return;
     }
 
@@ -358,9 +390,7 @@ function drawLottery(apiResult) {
     apiResult: apiResult
   });
   
-  // 顯示結果對話框
-  const resultCard = document.getElementById('resultCard');
-  resultCard.showModal();
+  // 注意：不在這裡顯示 resultCard，等到 showResult 被調用時才顯示
 }
 
 async function postProducts(draw) {
@@ -369,6 +399,9 @@ async function postProducts(draw) {
   const nameInput = document.getElementById('nameInput');
   const birthInput = document.getElementById('birthInput');
   const genderInputs = document.getElementsByName('gender');
+  const contactNameInput = document.getElementById('contactNameInput');
+
+  contactNameInput.value = nameInput.value;
 
   const requestBody = {
     name: nameInput.value,
@@ -400,12 +433,20 @@ async function postProducts(draw) {
 
 async function postContact() {
   // 發送 POST 請求到指定 API
-
+  const nameInput = document.getElementById('contactNameInput');
+  if (!nameInput.value.trim()) {
+    showSnackbar('請輸入您的姓名');
+    nameInput.focus();
+    return;
+  }
   const emailInput = document.getElementById('emailInput');
   const lineInput = document.getElementById('lineInput');
 
+  const birthInput = document.getElementById('birthInput');
+  const genderInputs = document.getElementsByName('gender');
+
   if (!emailInput.value.trim() && !lineInput.value.trim()) {
-    alert('請輸入您的電子信箱或 LINE ID');
+    showSnackbar('請輸入您的電子信箱或 LINE ID');
     if (!emailInput.value.trim()){
     emailInput.focus();
     }else{
@@ -415,6 +456,9 @@ async function postContact() {
   }
 
   const requestBody = {
+    name: nameInput.value,
+    birth: birthInput.value,
+    gender: genderInputs[0].checked ? '1' : '0',
     email: emailInput.value,
     line: lineInput.value,
   };
@@ -432,5 +476,5 @@ async function postContact() {
 
        console.log('聯絡資訊回應結果:', data);
 
-       alert('您的預約資訊已送出，我們會盡快與您聯絡，謝謝！');
+       showSnackbar('您的預約資訊已送出，我們會盡快與您聯絡，謝謝！', 4000);
 }

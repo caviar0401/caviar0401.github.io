@@ -1,11 +1,13 @@
 <!doctype html>
 <html lang="zh-Hant">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>AI 雲端媽祖</title>
   <link rel="stylesheet" href="./style.css" />
 </head>
+
 <body>
   <div class="app">
     <!-- Top brand -->
@@ -23,91 +25,80 @@
 
       <!-- TAB 1: Home / 求籤 -->
       <section class="page" data-page="home">
+
+        <div id="resultCard" class="resultCard hidden">
+          <div class="resultTitle" id="rTitle">—</div>
+          <div class="resultPoem" id="rPoem">—</div>
+          <div class="resultExplain" id="rExplain">—</div>
+
+          <div class="resultGift" id="rGift">—</div>
+
+          <div class="rowBtn">
+            <button id="againBtn" class="btnPrimary" type="button">再抽一次</button>
+            <button id="appointBtn" class="btnGhost" type="button">預約解籤</button>
+          </div>
+        </div>
+
         <div class="panel">
           <div class="panelHeader">
             <div class="panelTitle">稟報疏文</div>
             <div class="panelDivider"></div>
           </div>
 
-        <div class="fieldLabel" style="display: flex; gap: 1rem; align-items: center;">
+          <div class="fieldLabel" style="display: flex; gap: 1rem; align-items: center;">
             <label style="display: flex; align-items: center; gap: 0.3rem; cursor: pointer;">
-                <input type="radio" name="gender" value="male" checked />
-                <span>信男</span>
+              <input type="radio" name="gender" value="male" checked />
+              <span>信男</span>
             </label>
             <label style="display: flex; align-items: center; gap: 0.3rem; cursor: pointer;">
-                <input type="radio" name="gender" value="female" />
-                <span>信女</span>
+              <input type="radio" name="gender" value="female" />
+              <span>信女</span>
             </label>
-        </div>
-<label class="fieldLabel">姓名 <span class="req">*</span></label>
-        <label class="fieldLabel">
-          <input class="input" id="nameInput" placeholder="請輸入您的姓名" />
-
-          <label class="fieldLabel">生辰 (年/月/日 時:分)</label>
-        <input class="input" type="datetime-local" id="birthInput" style="color-scheme: dark;" />
-
-          <div class="hintCenter">--- 請選擇問事方向 ---</div>
-
-          <div class="grid2">
-            <button class="chip" type="button" data-topic="love">
-              <div class="chipIcon">♡</div>
-              <div class="chipText">良緣感情</div>
-            </button>
-            <button class="chip" type="button" data-topic="career">
-              <div class="chipIcon">🎁</div>
-              <div class="chipText">事業前程</div>
-            </button>
-            <button class="chip" type="button" data-topic="money">
-              <div class="chipIcon">💰</div>
-              <div class="chipText">財運投資</div>
-            </button>
-            <button class="chip" type="button" data-topic="health">
-              <div class="chipIcon">〰</div>
-              <div class="chipText">健康平安</div>
-            </button>
           </div>
+          <label class="fieldLabel">姓名 <span class="req">*</span></label>
+          <label class="fieldLabel">
+            <input class="input" id="nameInput" placeholder="請輸入您的姓名" />
 
-          <!-- 抽籤區（保留你原本抽籤筒概念，改成暗黑金色） -->
-          <div class="drawWrap">
-            <div class="jarWrap" aria-label="抽籤筒">
-              <div class="sticks" aria-hidden="true">
-                <span></span><span></span><span></span><span></span><span></span>
-              </div>
-              <div class="jar">
-                <button id="drawBtn" class="sealBtn" type="button" onclick="validateAndDraw()">開始<br/>抽籤</button>
-              </div>
+            <label class="fieldLabel">生辰 (年/月/日 時:分)</label>
+            <input class="input" type="datetime-local" id="birthInput" style="color-scheme: dark;" />
+
+            <div class="hintCenter">--- 請選擇問事方向 ---</div>
+
+            <div class="grid2">
+              <button class="chip" type="button" data-topic="love">
+                <div class="chipIcon">♡</div>
+                <div class="chipText">良緣感情</div>
+              </button>
+              <button class="chip" type="button" data-topic="career">
+                <div class="chipIcon">🎁</div>
+                <div class="chipText">事業前程</div>
+              </button>
+              <button class="chip" type="button" data-topic="money">
+                <div class="chipIcon">💰</div>
+                <div class="chipText">財運投資</div>
+              </button>
+              <button class="chip" type="button" data-topic="health">
+                <div class="chipIcon">〰</div>
+                <div class="chipText">健康平安</div>
+              </button>
             </div>
-            <div class="subNote">✧ 媽祖24小時在線解惑</div>
-          </div>
+
+            <!-- 抽籤區（保留你原本抽籤筒概念，改成暗黑金色） -->
+            <div class="drawWrap">
+              <div class="jarWrap" aria-label="抽籤筒">
+                <div class="sticks" aria-hidden="true">
+                  <span></span><span></span><span></span><span></span><span></span>
+                </div>
+                <div class="jar">
+                  <button id="drawBtn" class="sealBtn" type="button" onclick="validateAndDraw()">開始<br />抽籤</button>
+                </div>
+              </div>
+              <div class="subNote">✧ 媽祖24小時在線解惑</div>
+            </div>
         </div>
 
-        <!-- 結果卡（使用 dialog 彈窗） -->
-        <dialog id="resultCard" class="resultCard">
-          <button id="closeDialogBtn" class="closeBtn" type="button">✕</button>
-          
-          <div class="resultSection">
-            <div class="sectionTitle">個性分析</div>
-            <div class="sectionContent" id="rPersonality">—</div>
-          </div>
-          <hr/>
-          <div class="resultSection">
-            <div class="sectionTitle">流年分析</div>
-            <div class="sectionContent" id="rYearFortune">—</div>
-          </div>
-          <hr/>
+        <!-- 結果卡（顯示在上方） -->
 
-          <div class="resultTitle" id="rTitle">—</div>
-          <div class="resultPoem" id="rPoem">—</div>
-          <div class="resultExplain" id="rExplain">—</div>
-          
-          <br/><br/>
-          <div class="resultGift" id="rGift">—</div>
-
-          <div class="rowBtn">
-            <button id="againBtn" class="btnPrimary" type="button">再抽一次</button>
-            <button id="copyLinkBtn" class="btnGhost" type="button">複製結果連結</button>
-          </div>
-        </dialog>
       </section>
 
       <!-- TAB 2: Prizes / 獎品介紹 -->
@@ -123,10 +114,109 @@
         <div id="productsContainer"></div>
       </section>
 
-      <!-- TAB 3: Author / 作者介紹 -->
+      <!-- TAB 3: Activity / 活動說明 -->
+      <section class="page hidden" data-page="activity">
+        <div class="pageHead"></div>
+
+        <div class="bannerCard">
+          <div class="bannerTitle">✧ 媽祖賜福抽獎活動</div>
+          <div class="bannerDesc">誠心問事，即有機會獲得媽祖賜福好禮</div>
+        </div>
+
+        <div class="teamCard">
+          <div class="teamTitle">活動辦法</div>
+          <div class="teamDesc" style="text-align: left; line-height: 1.8;">
+            <p><strong>參加方式：</strong></p>
+            <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+              <li>填寫姓名、生辰資料</li>
+              <li>選擇問事方向（良緣感情／事業前程／財運投資／健康平安）</li>
+              <li>誠心抽籤，獲得媽祖指引</li>
+            </ul>
+
+            <p style="margin-top: 1.5rem;"><strong>抽獎獎品：</strong></p>
+            <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+              <li>🍪 甜蜜結緣・草莓米餅</li>
+              <li>🥮 步步高升・黑糖沙其馬</li>
+              <li>💰 招財進寶・開運小物</li>
+              <li>🎁 更多平安好物（詳見「獎品介紹」）</li>
+            </ul>
+
+            <p style="margin-top: 1.5rem;"><strong>活動期間：</strong></p>
+            <p style="margin: 0.5rem 0;">即日起至 2026年3月31日止</p>
+
+            <p style="margin-top: 1.5rem;"><strong>得獎公告：</strong></p>
+            <p style="margin: 0.5rem 0;">每週五公布中獎名單，將以電子郵件通知得獎者</p>
+          </div>
+        </div>
+
+        <div class="teamCard">
+          <div class="teamTitle">注意事項</div>
+          <div class="teamDesc" style="text-align: left; line-height: 1.8;">
+            <ul style="margin: 0.5rem 0; padding-left: 1.5rem;">
+              <li>每人每天限抽一次籤</li>
+              <li>需填寫完整個人資料方具抽獎資格</li>
+              <li>獎品以實際公告為準</li>
+              <li>本活動保留修改、終止之權利</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: Author / 作者介紹 -->
       <section class="page hidden" data-page="author">
         <div class="pageHead"></div>
 
+        <div class="teamCard hidden" id="resultCard2">
+          <div class="resultSection">
+            <div class="teamTitle">個性分析</div>
+            <div class="teamDesc" style="text-align: left; line-height: 1.8;" id="rPersonality">—</div>
+          </div>
+          <div class="resultSection">
+            <div class="teamTitle">2026 丙午年 流年分析</div>
+            <div class="teamDesc" style="text-align: left; line-height: 1.8;" id="rYearFortune">—</div>
+          </div>
+
+        </div>
+
+        <div class="teamCard">
+          <div class="teamTitle">✧ 預約 1v1 專屬解盤</div>
+          <div class="teamSub"><span id="rTitle2"></span> ・解籤服務・八字排盤・流年運勢・職涯諮詢・感情指引・
+          </div>
+
+          <label class="fieldLabel">姓名</label>
+          <input class="input" id="contactNameInput" placeholder="請輸入姓名" />
+
+          <label class="fieldLabel">電子信箱 (Email)</label>
+          <input class="input" id="emailInput" placeholder="example@mail.com" />
+
+          <label class="fieldLabel">LINE ID</label>
+          <input class="input" id="lineInput" placeholder="請輸入 LINE ID" />
+          <br /><br /><br />
+          <button class="cta" type="button" id="btnPrerequest">✈ 送出預約資訊</button>
+          <br /><br />
+          <div class="subNote">送出後將由專人與您聯繫安排時間</div><br />
+          Line 紫明居 官方帳號 https://lin.ee/mmv3213t
+        </div>
+      </section>
+
+      <!-- TAB 5: Partner / 商家報名 -->
+      <section class="page hidden" data-page="partner">
+        <div class="pageHead"></div>
+
+        <div class="teamCard">
+          <div class="avatar">🏪</div>
+          <div class="teamTitle">誠徵結緣夥伴</div>
+          <div class="teamDesc">
+            歡迎在地優質商家加入，共同推廣平安好物，與媽祖一同賜福。
+          </div>
+          <br /><br />
+          <button class="cta" id="partnerBtn" type="button">✧ 立即前往報名 →</button>
+          <br /><br />
+          <div class="subNote">（將前往外部表單填寫報名資訊）</div>
+        </div>
+        <br><br>
+        <div class="pageTitle" style="text-align:center;">關於作者</div>
+        <br />
         <div class="teamCard">
           <div class="avatar">🚀</div>
           <div class="teamTitle">雷課探險家</div>
@@ -146,37 +236,7 @@
           </div>
         </div>
 
-        <div class="teamCard">
-          <div class="teamTitle">✧ 預約 1v1 專屬解盤</div>
-          <div class="teamSub">八字排盤・流年運勢・職涯諮詢</div>
 
-          <label class="fieldLabel">電子信箱 (Email)</label>
-          <input class="input" id="emailInput" placeholder="example@mail.com" />
-
-          <label class="fieldLabel">LINE ID</label>
-          <input class="input" id="lineInput" placeholder="請輸入 LINE ID" />
-          <br/><br/><br/>
-          <button class="cta" type="button" id="btnPrerequest">✈ 送出預約資訊</button>
-          <br/><br/>
-          <div class="subNote">送出後將由專人與您聯繫安排時間</div>
-        </div>
-      </section>
-
-      <!-- TAB 4: Partner / 商家報名 -->
-      <section class="page hidden" data-page="partner">
-        <div class="pageHead"></div>
-
-        <div class="teamCard">
-          <div class="avatar">🏪</div>
-          <div class="teamTitle">誠徵結緣夥伴</div>
-          <div class="teamDesc">
-            歡迎在地優質商家加入，共同推廣平安好物，與媽祖一同賜福。
-          </div>
-          <br /><br />
-          <button class="cta" id="partnerBtn" type="button">✧ 立即前往報名 →</button>
-          <br /><br />
-          <div class="subNote">（將前往外部表單填寫報名資訊）</div>
-        </div>
       </section>
 
     </main>
@@ -184,20 +244,29 @@
     <!-- Bottom Tabs (4) -->
     <nav class="tabs">
       <button class="tab active" data-tab="home" type="button">
-        <div class="tabIcon">⌂</div><div class="tabText">首頁求籤</div>
+        <div class="tabIcon">⌂</div>
+        <div class="tabText">求籤</div>
       </button>
       <button class="tab" data-tab="prizes" type="button">
-        <div class="tabIcon">🎁</div><div class="tabText">獎品介紹</div>
+        <div class="tabIcon">🎁</div>
+        <div class="tabText">獎品</div>
+      </button>
+      <button class="tab" data-tab="activity" type="button">
+        <div class="tabIcon">🎉</div>
+        <div class="tabText">說明</div>
       </button>
       <button class="tab" data-tab="author" type="button">
-        <div class="tabIcon">⍟</div><div class="tabText">作者介紹</div>
+        <div class="tabIcon">⍟</div>
+        <div class="tabText">解籤</div>
       </button>
       <button class="tab" data-tab="partner" type="button">
-        <div class="tabIcon">🏪</div><div class="tabText">商家報名</div>
+        <div class="tabIcon">🏪</div>
+        <div class="tabText">商家</div>
       </button>
     </nav>
   </div>
 
   <script type="module" src="./app.js"></script>
 </body>
+
 </html>
