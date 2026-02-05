@@ -298,6 +298,19 @@ let selectedTopic = null;
   
   // 載入商品數據
   loadProducts();
+  
+  // 頁面加載完成後隱藏加載畫面
+  window.addEventListener('load', () => {
+    const loadingScreen = document.getElementById('loadingScreen');
+    if (loadingScreen) {
+      setTimeout(() => {
+        loadingScreen.classList.add('fade-out');
+        setTimeout(() => {
+          loadingScreen.style.display = 'none';
+        }, 500);
+      }, 3000); // 延遲 3 秒讓用戶看到加載動畫
+    }
+  });
 })();
 
 
