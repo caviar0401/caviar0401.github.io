@@ -23,6 +23,7 @@ const pages = $$(".page");
 const pageTitle = $("#pageTitle");
 
 // Home components
+const panel = $(".panel");
 const jarWrap = $(".jarWrap");
 const drawBtn = $("#drawBtn");
 const shareBtn = $("#shareBtn");
@@ -95,22 +96,13 @@ function showResult(lot){
   rTitle.textContent = lot.title ?? `第 ${lot.id} 籤`;
   rTitle2.textContent = lot.title ?? `第 ${lot.id} 籤`;
   
-  // 將籤詩分成兩行顯示
+  // 將籤詩按空格分成四行顯示
   const poem = lot.poem ?? "";
-  const poemLength = poem.length;
-  const midPoint = Math.ceil(poemLength / 2);
-  // 尋找中間點附近的標點符號
-  let splitIndex = midPoint;
-  const punctuation = ['，', '。', '；', '、', '！', '？', ' '];
-  for (let i = midPoint - 3; i < midPoint + 4 && i < poemLength; i++) {
-    if (i > 0 && punctuation.includes(poem[i])) {
-      splitIndex = i + 1;
-      break;
-    }
-  }
-  const line1 = poem.substring(0, splitIndex).trim();
-  const line2 = poem.substring(splitIndex).trim();
-  rPoem.textContent = line1 + '\n' + line2;
+  const lines = poem.split(' ').filter(line => line.trim() !== '');
+  rPoem.textContent = lines.join('\n');
+  
+  // 添加隨機位置的星光符號
+  addSparkles(rPoem);
   
   if(selectedTopic === null){
     rExplain.textContent = lot.explain ?? "";
@@ -126,6 +118,9 @@ function showResult(lot){
     rExplain.textContent = lot.explain ?? "";
   }
   
+  // 隱藏表單
+  panel.classList.add("hidden");
+  
   // 顯示結果卡
   resultCard.classList.remove("hidden");
   resultCard2.classList.remove("hidden");
@@ -135,6 +130,58 @@ function showResult(lot){
     resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }, 100);
 }
+
+// 添加随机星光符号
+function addSparkles(container) {
+  // 移除旧的星光
+  removeSparkles(container);
+  
+  const sparkleSymbols = ['✧', '✦', '⋆', '★', '✵'];
+  const sparkleCount = 8; // 星光数量
+  
+  for (let i = 0; i < sparkleCount; i++) {
+    const sparkle = document.createElement('span');
+    sparkle.className = 'poem-sparkle';
+    sparkle.textContent = sparkleSymbols[Math.floor(Math.random() * sparkleSymbols.length)];
+    
+    // 随机位置（避开中心区域）
+    const side = Math.floor(Math.random() * 4); // 0:上, 1:右, 2:下, 3:左
+    let top, left;
+    
+    switch(side) {
+      case 0: // 上方
+        top = Math.random() * 20 + 5 + '%';
+        left = Math.random() * 80 + 10 + '%';
+        break;
+      case 1: // 右方
+        top = Math.random() * 80 + 10 + '%';
+        left = Math.random() * 20 + 75 + '%';
+        break;
+      case 2: // 下方
+        top = Math.random() * 20 + 75 + '%';
+        left = Math.random() * 80 + 10 + '%';
+        break;
+      case 3: // 左方
+        top = Math.random() * 80 + 10 + '%';
+        left = Math.random() * 20 + 5 + '%';
+        break;
+    }
+    
+    sparkle.style.top = top;
+    sparkle.style.left = left;
+    sparkle.style.animationDelay = (Math.random() * 2) + 's';
+    sparkle.style.fontSize = (Math.random() * 8 + 12) + 'px';
+    
+    container.appendChild(sparkle);
+  }
+}
+
+// 移除星光符号
+function removeSparkles(container) {
+  const sparkles = container.querySelectorAll('.poem-sparkle');
+  sparkles.forEach(s => s.remove());
+}
+
 function clearResult(){
   rExplain.textContent = "";
   rTitle.textContent = "";
@@ -142,10 +189,16 @@ function clearResult(){
   rPoem.textContent = "";
   rPersonality.textContent = "—";
   rYearFortune.textContent = "—";
+  
+  // 移除星光符號
+  removeSparkles(rPoem);
 
   // 隱藏結果卡
   resultCard.classList.add("hidden");
   resultCard2.classList.add("hidden");
+  
+  // 顯示表單
+  panel.classList.remove("hidden");
 }
 
 // ---- Draw animation (3s with settle) ----
@@ -439,7 +492,7 @@ async function postProducts(draw) {
         rGift.textContent = "很遺憾，這次沒有抽中開運好物，請再接再厲！";
         
       }else{
-        rGift.textContent = '恭喜您獲得開運好物：' + data["data"]["title"] + '，價值：'+ data["data"]["price"]+'，請至「開運平安好物」頁面查看詳情！';
+        rGift.innerHTML = '恭喜您獲得開運好物<br><span style="color:yellow;font-size:16px">' + data["data"]["title"] + '，價值：'+ data["data"]["price"]+'</span><br>請至「開運平安好物」頁面查看詳情！';
         
       }
 }
