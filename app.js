@@ -215,6 +215,13 @@ drawBtn.addEventListener("click", () => {
     return;
   }
   
+  // 驗證生辰年份範圍 (1901-2049)
+  const birthYear = new Date(birthInput.value).getFullYear();
+  if (birthYear < 1901 || birthYear > 2049) {
+    showSnackbar('生辰年份必須在1901年到2049年之間');
+    return;
+  }
+  
   // 驗證問事方向
   if (!selectedTopic) {
     return;
@@ -393,6 +400,14 @@ window.validateAndDraw = async function() {
   // 驗證生辰
   if (!birthInput.value) {
     showSnackbar('請選擇您的生辰');
+    birthInput.focus();
+    return;
+  }
+  
+  // 驗證生辰年份範圍 (1901-2049)
+  const birthYear = new Date(birthInput.value).getFullYear();
+  if (birthYear < 1901 || birthYear > 2049) {
+    showSnackbar('生辰年份必須在1901年到2049年之間');
     birthInput.focus();
     return;
   }
